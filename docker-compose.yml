@@ -1,0 +1,23 @@
+services:
+  netscope:
+    build: .
+    image: netscope:latest
+    container_name: netscope
+    ports:
+      - "8000:8000"
+    environment:
+      - NETSCOPE_LOG_LEVEL=info
+      - NETSCOPE_MAX_SESSIONS=50
+      - NETSCOPE_DB_PATH=/data/netscope.db
+    volumes:
+      - netscope-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+
+volumes:
+  netscope-data:

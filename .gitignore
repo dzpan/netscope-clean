@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Frontend
+node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NetScope runtime state
+.netscope/
+
+# SQLite data
+data/
+*.db
+*.sqlite3
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.log
+
+# Prototype directories (not part of unified build)
+NetScope/
+domenion-network-mapper/
+
+# Internal / non-public files
+agents/
+BOARD-QA.md
+DEMO-SCRIPT.md
+CLAUDE.md
+DECISIONS.md

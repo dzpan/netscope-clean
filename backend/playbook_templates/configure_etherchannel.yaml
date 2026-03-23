@@ -1,0 +1,31 @@
+title: Configure EtherChannel (LACP)
+description: Bundle physical interfaces into a logical EtherChannel using LACP or static mode
+category: access-control
+platforms: [iosxe]
+variables:
+  - name: channel_group
+    var_type: int
+    required: true
+    description: Port-channel group number
+  - name: interface_range
+    var_type: string
+    required: true
+    description: "Interface range, e.g. GigabitEthernet1/0/1 - 2"
+  - name: mode
+    var_type: choice
+    required: true
+    description: EtherChannel negotiation mode
+    default: active
+    choices: [active, passive, on]
+pre_checks:
+  - show etherchannel summary
+steps:
+  - interface range {{interface_range}}
+  - channel-group {{channel_group}} mode {{mode}}
+  - no shutdown
+post_checks:
+  - show etherchannel summary
+  - show etherchannel {{channel_group}} detail
+rollback:
+  - interface range {{interface_range}}
+  - no channel-group {{channel_group}}

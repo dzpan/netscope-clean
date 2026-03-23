@@ -1,0 +1,32 @@
+# Production overrides — use with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  netscope:
+    restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - NETSCOPE_LOG_LEVEL=warning
+      - NETSCOPE_MAX_SESSIONS=100
+      - NETSCOPE_DB_PATH=/data/netscope.db
+      - NETSCOPE_SNAPSHOT_RETENTION_DAYS=90

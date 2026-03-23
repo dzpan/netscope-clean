@@ -1,0 +1,33 @@
+title: Configure Access Port
+description: Set interface to access mode with specified VLAN
+category: vlan
+platforms: [iosxe, nxos]
+variables:
+  - name: interface
+    var_type: interface
+    required: true
+    description: Target interface (e.g., GigabitEthernet1/0/1)
+  - name: vlan_id
+    var_type: int
+    required: true
+    description: Access VLAN ID (1-4094)
+  - name: port_description
+    var_type: string
+    required: false
+    description: Interface description (leave empty to skip)
+pre_checks:
+  - show running-config interface {{interface}}
+  - show interfaces {{interface}} status
+steps:
+  - interface {{interface}}
+  - switchport mode access
+  - switchport access vlan {{vlan_id}}
+  - description {{?port_description}}
+  - no shutdown
+post_checks:
+  - show interfaces {{interface}} status
+  - show running-config interface {{interface}}
+rollback:
+  - interface {{interface}}
+  - no switchport access vlan {{vlan_id}}
+  - shutdown

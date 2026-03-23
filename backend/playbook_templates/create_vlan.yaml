@@ -1,0 +1,22 @@
+title: Create VLAN with Name
+description: Create a new VLAN and optionally assign a descriptive name
+category: vlan
+platforms: [iosxe, nxos]
+variables:
+  - name: vlan_id
+    var_type: int
+    required: true
+    description: VLAN ID to create (1-4094)
+  - name: vlan_name
+    var_type: string
+    required: false
+    description: Descriptive name for the VLAN
+pre_checks:
+  - show vlan brief
+steps:
+  - vlan {{vlan_id}}
+  - name {{?vlan_name}}
+post_checks:
+  - show vlan id {{vlan_id}}
+rollback:
+  - no vlan {{vlan_id}}

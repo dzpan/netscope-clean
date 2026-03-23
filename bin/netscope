@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+# NetScope CLI — developer and production management script
+# Usage: ./bin/netscope <command>
+# On Linux (case-sensitive FS) you can also symlink: ln -s bin/netscope netscope
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$SCRIPT_DIR"
+
+# ---------------------------------------------------------------------------
+# Colours
+# ---------------------------------------------------------------------------
+if [ -t 1 ] && command -v tput &>/dev/null && tput colors &>/dev/null 2>&1; then
+  RED=$(tput setaf 1)
+  GREEN=$(tput setaf 2)
+  YELLOW=$(tput setaf 3)
+  CYAN=$(tput setaf 6)
+  BOLD=$(tput bold)
+  RESET=$(tput sgr0)
+else
+  RED='' GREEN='' YELLOW='' CYAN='' BOLD='' RESET=''
+fi
+
+info()    { echo "${CYAN}[netscope]${RESET} $*"; }
+success() { echo "${GREEN}[netscope]${RESET} $*"; }
+warn()    { echo "${YELLOW}[netscope]${RESET} $*" >&2; }
+die()     { echo "${RED}[netscope] ERROR:${RESET} $*" >&2; exit 1; }
+
+# ---------------------------------------------------------------------------
+# Auto-detect Python virtualenv
+# ---------------------------------------------------------------------------
+find_python() {
+  if [ -x ".venv/bin/python" ]; then
+    echo ".venv/bin/python"
+  elif [ -x "venv/bin/python" ]; then
+    echo "venv/bin/python"
+  elif command -v python3 &>/dev/null; then
+    echo "python3"
+  else
+    die "Python 3 not found. Install Python 3.11+ or create a virtualenv."
+  fi
+}
+
+find_uvicorn() {
+  if [ -x ".venv/bin/uvicorn" ]; then
+    echo ".venv/bin/uvicorn"
+  elif [ -x "venv/bin/uvicorn" ]; then
+    echo "venv/bin/uvicorn"
+  elif command -v uvicorn &>/dev/null; then
+    echo "uvicorn"
+  else
+    die "uvicorn not found. Run: pip install -e '.[dev]'"
+  fi
+}
+
+find_npm() {
+  if command -v npm &>/dev/null; then
+    echo "$(command -v npm)"
+  else
+    die "npm not found. Install Node 20+ for frontend commands."
+  fi
+}
+
+check_docker() {
+  command -v docker &>/dev/null || die "Docker not found."
+}
+
+# ---------------------------------------------------------------------------
+# Commands
+# ---------------------------------------------------------------------------
+
+cmd_dev() {
+  info "Starting development servers…"
+  local uvicorn npm
+  uvicorn=$(find_uvicorn)
+  npm=$(find_npm)
+
+  info "Backend  → http://localhost:8000  (uvicorn --reload)"
+  "$uvicorn" backend.main:app --reload --host 0.0.0.0 --port 8000 &
+  BACKEND_PID=$!
+
+  sleep 1  # let backend bind before Vite starts
+
+  info "Frontend → http://localhost:5173  (Vite dev server)"
+  (cd frontend && "$npm" run dev) &
+  FRONTEND_PID=$!
+
+  trap 'echo ""; info "Stopping…"; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; wait 2>/dev/null; exit 0' INT TERM
+  wait
+}
+
+cmd_start() {
+  info "Starting production server…"
+  local uvicorn
+  uvicorn=$(find_uvicorn)
+  local port="${NETSCOPE_PORT:-8000}"
+  info "Serving at http://0.0.0.0:${port}  (API + built frontend)"
+  exec "$uvicorn" backend.main:app --host 0.0.0.0 --port "$port"
+}
+
+cmd_build() {
+  info "Building frontend for production…"
+  local npm
+  npm=$(find_npm)
+  (cd frontend && "$npm" run build)
+  success "Built → frontend/dist/"
+}
+
+cmd_test() {
+  info "Running quality gate…"
+  local python
+  python=$(find_python)
+  local failed=0
+
+  echo ""
+  echo "${BOLD}── ruff check ──────────────────────────────${RESET}"
+  "$python" -m ruff check backend/ || failed=1
+
+  echo ""
+  echo "${BOLD}── ruff format --check ─────────────────────${RESET}"
+  "$python" -m ruff format --check backend/ || failed=1
+
+  echo ""
+  echo "${BOLD}── mypy --strict ───────────────────────────${RESET}"
+  "$python" -m mypy --strict backend/ || failed=1
+
+  echo ""
+  echo "${BOLD}── pytest ──────────────────────────────────${RESET}"
+  "$python" -m pytest -v || failed=1
+
+  echo ""
+  if [ "$failed" -eq 0 ]; then
+    success "All checks passed."
+  else
+    die "One or more checks failed."
+  fi
+}
+
+cmd_docker() {
+  check_docker
+  info "Building and starting Docker container…"
+  docker compose up --build "$@"
+}
+
+cmd_help() {
+  cat <<EOF
+${BOLD}NetScope CLI${RESET}
+
+${CYAN}Usage:${RESET}  ./bin/netscope <command> [options]
+
+${CYAN}Commands:${RESET}
+  ${GREEN}dev${RESET}      Start backend (uvicorn --reload) + frontend (Vite dev server)
+  ${GREEN}start${RESET}    Production start — uvicorn serves API + built frontend
+           Env var: NETSCOPE_PORT (default: 8000)
+  ${GREEN}build${RESET}    Build frontend for production (output: frontend/dist/)
+  ${GREEN}test${RESET}     Run full quality gate: ruff check, ruff format, mypy, pytest
+  ${GREEN}docker${RESET}   docker compose up --build [extra docker-compose args]
+  ${GREEN}help${RESET}     Show this help
+
+${CYAN}Dev workflow:${RESET}
+  ./bin/netscope dev          # Starts both servers; Ctrl-C stops both
+
+${CYAN}Production workflow:${RESET}
+  ./bin/netscope build        # Build frontend bundle
+  ./bin/netscope start        # Serve everything from one process
+
+${CYAN}Docker workflow:${RESET}
+  ./bin/netscope docker       # Build image and run via docker compose
+
+${CYAN}Linux shorthand:${RESET}
+  ln -s bin/netscope netscope # Create root-level symlink (case-sensitive FS only)
+  ./netscope dev
+EOF
+}
+
+# ---------------------------------------------------------------------------
+# Dispatch
+# ---------------------------------------------------------------------------
+COMMAND="${1:-help}"
+shift || true
+
+case "$COMMAND" in
+  dev)         cmd_dev    "$@" ;;
+  start)       cmd_start  "$@" ;;
+  build)       cmd_build  "$@" ;;
+  test)        cmd_test   "$@" ;;
+  docker)      cmd_docker "$@" ;;
+  help|--help|-h) cmd_help ;;
+  *)
+    die "Unknown command: '$COMMAND'. Run './bin/netscope help' for usage."
+    ;;
+esac

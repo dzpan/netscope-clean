@@ -1,0 +1,27 @@
+title: Enable DHCP Snooping
+description: Enable DHCP snooping on a VLAN and optionally configure a trusted uplink interface
+category: security
+platforms: [iosxe]
+variables:
+  - name: vlan_id
+    var_type: int
+    required: true
+    description: VLAN ID to enable DHCP snooping on (1-4094)
+  - name: trusted_interface
+    var_type: interface
+    required: false
+    description: Uplink interface to trust
+pre_checks:
+  - show ip dhcp snooping
+steps:
+  - ip dhcp snooping
+  - ip dhcp snooping vlan {{vlan_id}}
+  - interface {{?trusted_interface}}
+  - ip dhcp snooping trust
+  - exit
+post_checks:
+  - show ip dhcp snooping
+  - show ip dhcp snooping binding
+rollback:
+  - no ip dhcp snooping vlan {{vlan_id}}
+  - no ip dhcp snooping

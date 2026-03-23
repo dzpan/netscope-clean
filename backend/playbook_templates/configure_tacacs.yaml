@@ -1,0 +1,36 @@
+title: Configure TACACS+
+description: >-
+  Set TACACS+ server for AAA authentication (requires IOS-XE 16.12+).
+  Prerequisites: 'aaa new-model' must already be enabled on the device.
+  NX-OS note: TACACS+ configuration uses different syntax on NX-OS;
+  this template is IOS-XE only.
+  This playbook uses the server name NETSCOPE_TACACS and group name
+  NETSCOPE_GROUP as naming conventions.
+category: security
+platforms: [iosxe]
+variables:
+  - name: tacacs_server
+    var_type: string
+    required: true
+    description: TACACS+ server IP address
+  - name: tacacs_key
+    var_type: string
+    required: true
+    description: TACACS+ shared secret key
+pre_checks:
+  - show running-config | section tacacs
+  - show running-config | section aaa
+steps:
+  - tacacs server NETSCOPE_TACACS
+  - address ipv4 {{tacacs_server}}
+  - key {{tacacs_key}}
+  - exit
+  - aaa new-model
+  - aaa group server tacacs+ NETSCOPE_GROUP
+  - server name NETSCOPE_TACACS
+post_checks:
+  - show tacacs
+  - show running-config | section tacacs
+rollback:
+  - no aaa group server tacacs+ NETSCOPE_GROUP
+  - no tacacs server NETSCOPE_TACACS

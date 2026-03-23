@@ -1,0 +1,23 @@
+title: Set SNMP Community
+description: Configure SNMP v2c community string
+category: monitoring
+platforms: [iosxe, nxos]
+variables:
+  - name: community_string
+    var_type: string
+    required: true
+    description: SNMP community string
+  - name: access_mode
+    var_type: choice
+    required: false
+    default: RO
+    description: Access mode
+    choices: [RO, RW]
+pre_checks:
+  - show snmp community
+steps:
+  - snmp-server community {{community_string}} {{access_mode}}
+post_checks:
+  - show snmp community
+rollback:
+  - no snmp-server community {{community_string}}

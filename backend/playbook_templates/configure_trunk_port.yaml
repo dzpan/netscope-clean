@@ -1,0 +1,33 @@
+title: Configure Trunk Port
+description: Configure an interface as an 802.1Q trunk with optional native VLAN and allowed VLAN filtering
+category: vlan
+platforms: [iosxe, nxos]
+variables:
+  - name: interface
+    var_type: interface
+    required: true
+    description: Target interface (e.g., GigabitEthernet1/0/1)
+  - name: native_vlan
+    var_type: int
+    required: false
+    description: Native VLAN ID for untagged traffic
+    default: "1"
+  - name: allowed_vlans
+    var_type: string
+    required: false
+    description: "Comma-separated VLAN IDs or 'all'"
+pre_checks:
+  - show interfaces {{interface}} trunk
+  - show running-config interface {{interface}}
+steps:
+  - interface {{interface}}
+  - switchport mode trunk
+  - switchport trunk native vlan {{?native_vlan}}
+  - switchport trunk allowed vlan {{?allowed_vlans}}
+  - no shutdown
+post_checks:
+  - show interfaces {{interface}} trunk
+rollback:
+  - interface {{interface}}
+  - no switchport mode trunk
+  - shutdown

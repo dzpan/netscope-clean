@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="24" fill="#0a0a0f"/>
+  <g transform="translate(96,96)">
+    <!-- Globe circle -->
+    <circle r="56" fill="none" stroke="#f97316" stroke-width="4"/>
+    <!-- Horizontal lines -->
+    <ellipse rx="56" ry="20" fill="none" stroke="#f97316" stroke-width="2.5" opacity="0.6"/>
+    <line x1="-56" y1="0" x2="56" y2="0" stroke="#f97316" stroke-width="2.5" opacity="0.6"/>
+    <!-- Vertical meridian -->
+    <ellipse rx="20" ry="56" fill="none" stroke="#f97316" stroke-width="2.5" opacity="0.6"/>
+    <!-- Network nodes -->
+    <circle cx="0" cy="-56" r="7" fill="#f97316"/>
+    <circle cx="48" cy="28" r="7" fill="#f97316"/>
+    <circle cx="-48" cy="28" r="7" fill="#f97316"/>
+    <circle cx="0" cy="0" r="8" fill="#f97316"/>
+    <!-- Network edges -->
+    <line x1="0" y1="-56" x2="48" y2="28" stroke="#f97316" stroke-width="2.5" opacity="0.4"/>
+    <line x1="48" y1="28" x2="-48" y2="28" stroke="#f97316" stroke-width="2.5" opacity="0.4"/>
+    <line x1="-48" y1="28" x2="0" y2="-56" stroke="#f97316" stroke-width="2.5" opacity="0.4"/>
+    <line x1="0" y1="0" x2="0" y2="-56" stroke="#f97316" stroke-width="2.5" opacity="0.4"/>
+    <line x1="0" y1="0" x2="48" y2="28" stroke="#f97316" stroke-width="2.5" opacity="0.4"/>
+    <line x1="0" y1="0" x2="-48" y2="28" stroke="#f97316" stroke-width="2.5" opacity="0.4"/>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+title: Configure Storm Control
+description: Configure storm control on an interface to limit broadcast, multicast, or unicast traffic
+category: security
+platforms: [iosxe]
+variables:
+  - name: interface
+    var_type: interface
+    required: true
+    description: Target interface (e.g., GigabitEthernet1/0/1)
+  - name: level
+    var_type: string
+    required: true
+    description: Storm control threshold percentage
+    default: "50.00"
+  - name: traffic_type
+    var_type: choice
+    required: true
+    description: Type of traffic to apply storm control to
+    default: broadcast
+    choices: [broadcast, multicast, unicast]
+pre_checks:
+  - show storm-control {{interface}}
+steps:
+  - interface {{interface}}
+  - storm-control {{traffic_type}} level {{level}}
+  - storm-control action shutdown
+post_checks:
+  - show storm-control {{interface}}
+rollback:
+  - interface {{interface}}
+  - no storm-control {{traffic_type}} level
+  - no storm-control action

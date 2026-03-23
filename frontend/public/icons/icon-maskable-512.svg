@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Maskable icon: safe zone is inner 80% (51.2px padding each side) -->
+  <rect width="512" height="512" fill="#0a0a0f"/>
+  <g transform="translate(256,256)">
+    <!-- Globe circle -->
+    <circle r="120" fill="none" stroke="#f97316" stroke-width="7"/>
+    <!-- Horizontal lines -->
+    <ellipse rx="120" ry="43" fill="none" stroke="#f97316" stroke-width="4" opacity="0.6"/>
+    <line x1="-120" y1="0" x2="120" y2="0" stroke="#f97316" stroke-width="4" opacity="0.6"/>
+    <!-- Vertical meridian -->
+    <ellipse rx="43" ry="120" fill="none" stroke="#f97316" stroke-width="4" opacity="0.6"/>
+    <!-- Network nodes -->
+    <circle cx="0" cy="-120" r="15" fill="#f97316"/>
+    <circle cx="104" cy="60" r="15" fill="#f97316"/>
+    <circle cx="-104" cy="60" r="15" fill="#f97316"/>
+    <circle cx="0" cy="0" r="16" fill="#f97316"/>
+    <!-- Network edges -->
+    <line x1="0" y1="-120" x2="104" y2="60" stroke="#f97316" stroke-width="4" opacity="0.4"/>
+    <line x1="104" y1="60" x2="-104" y2="60" stroke="#f97316" stroke-width="4" opacity="0.4"/>
+    <line x1="-104" y1="60" x2="0" y2="-120" stroke="#f97316" stroke-width="4" opacity="0.4"/>
+    <line x1="0" y1="0" x2="0" y2="-120" stroke="#f97316" stroke-width="4" opacity="0.4"/>
+    <line x1="0" y1="0" x2="104" y2="60" stroke="#f97316" stroke-width="4" opacity="0.4"/>
+    <line x1="0" y1="0" x2="-104" y2="60" stroke="#f97316" stroke-width="4" opacity="0.4"/>
+  </g>
+</svg>

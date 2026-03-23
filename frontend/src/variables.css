@@ -1,0 +1,160 @@
+/**
+ * NetScope Design Tokens
+ * CSS custom properties for all design system values.
+ * Dark theme is default; light theme overrides via [data-theme="light"].
+ *
+ * Colors are defined as both hex (--color) and space-separated RGB (--color-rgb)
+ * to support Tailwind opacity modifiers like bg-gray-900/50.
+ */
+
+:root {
+  /* ============================================================
+   * COLOR PALETTE — Gray Foundation (Dark Theme — Default)
+   * ============================================================ */
+  --gray-950-rgb: 10 10 15;
+  --gray-900-rgb: 17 17 24;
+  --gray-850-rgb: 24 24 31;
+  --gray-800-rgb: 31 31 40;
+  --gray-750-rgb: 37 37 48;
+  --gray-700-rgb: 42 42 53;
+  --gray-600-rgb: 58 58 72;
+  --gray-500-rgb: 90 90 106;
+  --gray-400-rgb: 122 122 138;
+  --gray-300-rgb: 154 154 170;
+  --gray-200-rgb: 186 186 188;
+  --gray-100-rgb: 224 224 228;
+  --gray-50-rgb:  240 240 242;
+
+  --gray-950: rgb(var(--gray-950-rgb));
+  --gray-900: rgb(var(--gray-900-rgb));
+  --gray-850: rgb(var(--gray-850-rgb));
+  --gray-800: rgb(var(--gray-800-rgb));
+  --gray-750: rgb(var(--gray-750-rgb));
+  --gray-700: rgb(var(--gray-700-rgb));
+  --gray-600: rgb(var(--gray-600-rgb));
+  --gray-500: rgb(var(--gray-500-rgb));
+  --gray-400: rgb(var(--gray-400-rgb));
+  --gray-300: rgb(var(--gray-300-rgb));
+  --gray-200: rgb(var(--gray-200-rgb));
+  --gray-100: rgb(var(--gray-100-rgb));
+  --gray-50:  rgb(var(--gray-50-rgb));
+
+  /* ============================================================
+   * COLOR PALETTE — Orange Accent
+   * ============================================================ */
+  --orange-950-rgb: 67 20 7;
+  --orange-900-rgb: 124 45 18;
+  --orange-800-rgb: 154 52 18;
+  --orange-700-rgb: 194 65 12;
+  --orange-600-rgb: 234 88 12;
+  --orange-500-rgb: 249 115 22;
+  --orange-400-rgb: 251 146 60;
+  --orange-300-rgb: 253 186 116;
+  --orange-100-rgb: 255 237 213;
+
+  --orange-950: rgb(var(--orange-950-rgb));
+  --orange-900: rgb(var(--orange-900-rgb));
+  --orange-800: rgb(var(--orange-800-rgb));
+  --orange-700: rgb(var(--orange-700-rgb));
+  --orange-600: rgb(var(--orange-600-rgb));
+  --orange-500: rgb(var(--orange-500-rgb));
+  --orange-400: rgb(var(--orange-400-rgb));
+  --orange-300: rgb(var(--orange-300-rgb));
+  --orange-100: rgb(var(--orange-100-rgb));
+  --orange-glow: rgba(249, 115, 22, 0.15);
+
+  /* ============================================================
+   * SEMANTIC / STATUS COLORS
+   * ============================================================ */
+  --status-up:      #22c55e;
+  --status-down:    #ef4444;
+  --status-warning: #f97316;
+  --status-info:    #94a3b8;
+  --status-unknown: #6b7280;
+
+  /* ============================================================
+   * TYPOGRAPHY
+   * ============================================================ */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.8125rem;
+  --text-base: 0.875rem;
+  --text-lg:   1rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+
+  /* ============================================================
+   * SPACING & LAYOUT
+   * ============================================================ */
+  --panel-padding:   16px;
+  --cell-padding:    8px 12px;
+  --panel-gap:       12px;
+  --sidebar-width:   280px;
+  --sidebar-collapsed: 56px;
+  --topbar-height:   48px;
+  --statusbar-height: 28px;
+
+  /* ============================================================
+   * BORDER RADIUS
+   * ============================================================ */
+  --radius-none: 0;
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   8px;
+
+  /* ============================================================
+   * SHADOWS & DEPTH
+   * ============================================================ */
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg:   0 8px 24px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 12px rgba(249, 115, 22, 0.25);
+
+  /* ============================================================
+   * TRANSITIONS
+   * ============================================================ */
+  --transition-fast:   100ms ease-out;
+  --transition-normal: 150ms ease-out;
+  --transition-slow:   200ms ease-out;
+}
+
+/* ================================================================
+ * LIGHT THEME — Override gray palette and shadows
+ * ================================================================ */
+[data-theme="light"] {
+  --gray-950-rgb: 248 248 250;
+  --gray-900-rgb: 240 240 243;
+  --gray-850-rgb: 232 232 236;
+  --gray-800-rgb: 224 224 229;
+  --gray-750-rgb: 216 216 222;
+  --gray-700-rgb: 203 203 212;
+  --gray-600-rgb: 176 176 188;
+  --gray-500-rgb: 138 138 152;
+  --gray-400-rgb: 106 106 120;
+  --gray-300-rgb: 74 74 88;
+  --gray-200-rgb: 42 42 56;
+  --gray-100-rgb: 26 26 40;
+  --gray-50-rgb:  15 15 26;
+
+  --orange-700-rgb: 154 52 18;
+  --orange-600-rgb: 194 65 12;
+  --orange-500-rgb: 234 88 12;
+  --orange-400-rgb: 249 115 22;
+  --orange-300-rgb: 251 146 60;
+  --orange-100-rgb: 255 247 237;
+  --orange-glow: rgba(234, 88, 12, 0.1);
+
+  --status-up:      #16a34a;
+  --status-down:    #dc2626;
+  --status-warning: #ea580c;
+  --status-info:    #64748b;
+  --status-unknown: #9ca3af;
+
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:   0 8px 24px rgba(0,0,0,0.12);
+  --shadow-glow: 0 0 12px rgba(234, 88, 12, 0.15);
+}

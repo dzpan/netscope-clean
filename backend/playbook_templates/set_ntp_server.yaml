@@ -1,0 +1,18 @@
+title: Set NTP Server
+description: Configure NTP server with verification
+category: management
+platforms: [iosxe, nxos]
+variables:
+  - name: ntp_server
+    var_type: string
+    required: true
+    description: NTP server IP address or hostname
+pre_checks:
+  - show ntp associations
+steps:
+  - ntp server {{ntp_server}}
+post_checks:
+  - show ntp associations
+  - show ntp status
+rollback:
+  - no ntp server {{ntp_server}}

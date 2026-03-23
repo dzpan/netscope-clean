@@ -1,0 +1,23 @@
+title: Shutdown/No Shutdown Interface
+description: Safely enable or disable an interface
+category: general
+platforms: [iosxe, nxos]
+variables:
+  - name: interface
+    var_type: interface
+    required: true
+    description: Target interface
+  - name: action
+    var_type: choice
+    required: true
+    description: Enable or disable the interface
+    choices: [shutdown, "no shutdown"]
+pre_checks:
+  - show interfaces {{interface}} status
+steps:
+  - interface {{interface}}
+  - "{{action}}"
+post_checks:
+  - show interfaces {{interface}} status
+rollback:
+  - auto

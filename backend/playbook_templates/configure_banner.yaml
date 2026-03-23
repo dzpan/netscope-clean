@@ -1,0 +1,22 @@
+title: Configure Banner
+description: Set login or MOTD banner
+category: management
+platforms: [iosxe, nxos]
+variables:
+  - name: banner_type
+    var_type: choice
+    required: true
+    description: Banner type
+    choices: [motd, login, exec]
+  - name: banner_text
+    var_type: string
+    required: true
+    description: Banner message text
+pre_checks:
+  - show running-config | include banner
+steps:
+  - "banner {{banner_type}} ^ {{banner_text}} ^"
+post_checks:
+  - show running-config | include banner
+rollback:
+  - no banner {{banner_type}}

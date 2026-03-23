@@ -1,0 +1,33 @@
+title: Enable Port Security
+description: Enable port-security with configurable max MAC addresses
+category: security
+platforms: [iosxe]
+variables:
+  - name: interface
+    var_type: interface
+    required: true
+    description: Target interface
+  - name: max_mac
+    var_type: int
+    required: false
+    default: "1"
+    description: Maximum allowed MAC addresses
+  - name: violation_action
+    var_type: choice
+    required: false
+    default: shutdown
+    description: Violation action
+    choices: [shutdown, restrict, protect]
+pre_checks:
+  - show running-config interface {{interface}}
+  - show port-security interface {{interface}}
+steps:
+  - interface {{interface}}
+  - switchport port-security
+  - switchport port-security maximum {{max_mac}}
+  - switchport port-security violation {{violation_action}}
+post_checks:
+  - show port-security interface {{interface}}
+rollback:
+  - interface {{interface}}
+  - no switchport port-security

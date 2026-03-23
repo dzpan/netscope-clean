@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- AP box -->
+  <rect x="8" y="14" width="8" height="6" rx="1"/>
+  <!-- Wireless signal arcs from center top of box -->
+  <path d="M12 14 C10.3 14 8.8 13.3 7.8 12.2"/>
+  <path d="M12 14 C13.7 14 15.2 13.3 16.2 12.2"/>
+  <path d="M12 14 C9.2 14 6.7 12.8 5 11"/>
+  <path d="M12 14 C14.8 14 17.3 12.8 19 11"/>
+  <!-- Antenna stem -->
+  <line x1="12" y1="14" x2="12" y2="10"/>
+  <!-- Center dot -->
+  <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/>
+</svg>

@@ -1,0 +1,24 @@
+title: Set Logging Server
+description: Configure syslog destination
+category: monitoring
+platforms: [iosxe]
+variables:
+  - name: syslog_server
+    var_type: string
+    required: true
+    description: Syslog server IP address
+  - name: log_level
+    var_type: choice
+    required: false
+    default: informational
+    description: Logging severity level
+    choices: [emergencies, alerts, critical, errors, warnings, notifications, informational, debugging]
+pre_checks:
+  - show logging
+steps:
+  - logging host {{syslog_server}}
+  - logging trap {{log_level}}
+post_checks:
+  - show logging
+rollback:
+  - no logging host {{syslog_server}}

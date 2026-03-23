@@ -1,0 +1,66 @@
+# Example vendor template — Extreme Networks EXOS
+#
+# This file demonstrates the YAML template format for adding vendor support
+# to NetScope without writing Python code.  Copy and modify this file to
+# support additional vendors.
+#
+# Template fields:
+#   vendor_id        — unique slug (lowercase, no spaces)
+#   display_name     — human-readable name for the UI
+#   detect_pattern   — regex matched against "show version" output (case-insensitive)
+#   on_open_commands — list of commands to run after SSH connection opens (pagination, etc.)
+#   version_parsing  — regex patterns (with capture group 1) for extracting version fields
+#   neighbor_commands — protocol → show command for neighbor discovery
+#   not_enabled_markers — protocol → list of strings indicating protocol is disabled
+#   commands         — group name → list of command entries
+#
+# Each command entry has:
+#   command   — the CLI command string
+#   parser    — "regex" or "tabular"
+#   pattern   — (regex parser) named-group regex applied per-line
+#   header_pattern — (tabular parser) regex to detect the header row
+#   columns   — (tabular parser) list of {header, field} mappings
+
+vendor_id: extreme
+display_name: Extreme Networks EXOS
+
+# Regex matched against "show version" output (case-insensitive)
+detect_pattern: "ExtremeXOS"
+
+# Commands to disable pagination after SSH session opens
+on_open_commands:
+  - "disable clipaging"
+
+# Version field extraction (each pattern must have exactly one capture group)
+version_parsing:
+  hostname_pattern: "SysName:\\s+(\\S+)"
+  platform_pattern: "System Type:\\s+(.+?)\\s*$"
+  serial_pattern: "Serial Number:\\s+(\\S+)"
+  os_version_pattern: "ExtremeXOS version\\s+(\\S+)"
+  uptime_pattern: "System UpTime:\\s+(.+?)\\s*$"
+
+# Neighbor discovery commands
+neighbor_commands:
+  lldp: "show lldp neighbors detailed"
+
+not_enabled_markers:
+  lldp:
+    - "LLDP is not enabled"
+
+# Data collection commands by group name.
+# Group names must match NetScope's built-in groups:
+#   interfaces, vlans, arp, mac, routes, etherchannel, spanning_tree, trunks
+commands:
+  interfaces:
+    - command: "show ports information detail"
+      parser: tabular
+      header_pattern: "Port\\s+Flags"
+      columns:
+        - { header: "Port", field: "name" }
+        - { header: "Flags", field: "status" }
+
+  vlans:
+    - command: "show vlan"
+      parser: regex
+      # Matches lines like: "Default              1     /----- ANY/NONE"
+      pattern: "(?P<name>\\S+)\\s+(?P<vlan_id>\\d+)\\s+"
