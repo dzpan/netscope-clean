@@ -56,8 +56,8 @@ NetScope auto-discovers your network topology via CDP/LLDP over SSH, collects de
 ### Docker (recommended)
 
 ```bash
-git clone https://github.com/paperclipai/netscope.git
-cd netscope
+git clone https://github.com/dzpan/netscope-clean.git
+cd netscope-clean
 docker compose up -d
 ```
 
@@ -71,12 +71,12 @@ NETSCOPE_AUTH_ENABLED=true NETSCOPE_SECRET_KEY=your-secret-key docker compose up
 
 For production hardening, reverse proxy setup, and bare-metal systemd deployment, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
-### Bare Metal
+### Bare Metal (Linux / macOS)
 
 ```bash
 # Backend
 python3 -m venv .venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+source .venv/bin/activate
 pip install -e ".[dev]"
 uvicorn backend.main:app --reload --port 8000
 
@@ -87,6 +87,35 @@ npm run dev
 ```
 
 Open `http://localhost:5173` (Vite dev server proxies API to `:8000`).
+
+### Bare Metal (Windows)
+
+**Prerequisites:** Python 3.11+, Node.js 20+, Git — install from [python.org](https://python.org), [nodejs.org](https://nodejs.org), and [git-scm.com](https://git-scm.com).
+
+```powershell
+# Clone the repo
+git clone https://github.com/dzpan/netscope-clean.git
+cd netscope-clean
+
+# Backend — open a PowerShell or Command Prompt window
+python -m venv .venv
+.venv\Scripts\activate
+pip install -e ".[dev]"
+uvicorn backend.main:app --reload --port 8000
+
+# Frontend — open a second PowerShell window
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+**Windows-specific notes:**
+- Use `python` (not `python3`) in PowerShell/CMD after installing from python.org
+- If `uvicorn` isn't found after install, restart your terminal or run `python -m uvicorn backend.main:app --reload --port 8000`
+- Windows Defender may prompt on first SSH connection — allow through firewall if prompted
+- For persistent production use on Windows, Docker Desktop (see above) is strongly recommended over bare-metal
 
 ### First Discovery
 

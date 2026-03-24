@@ -21,11 +21,10 @@ RUN npm run build
 # Stage 3: Minimal runtime image — no build tools
 FROM python:3.11.9-slim-bookworm AS runtime
 
-LABEL maintainer="PaperclipAI <noreply@paperclip.ing>"
 LABEL org.opencontainers.image.title="NetScope"
 LABEL org.opencontainers.image.description="SSH-based network topology intelligence for Cisco networks"
 LABEL org.opencontainers.image.version="1.1.0"
-LABEL org.opencontainers.image.source="https://github.com/paperclipai/netscope"
+LABEL org.opencontainers.image.source="https://github.com/dzpan/netscope-clean"
 
 WORKDIR /app
 

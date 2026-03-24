@@ -5,8 +5,8 @@ The definitive guide for running NetScope in production.
 ## 1. Quick Start
 
 ```bash
-git clone https://github.com/paperclipai/netscope.git
-cd netscope
+git clone https://github.com/dzpan/netscope-clean.git
+cd netscope-clean
 docker compose up -d
 # Open http://localhost:8000
 ```
@@ -114,8 +114,8 @@ netscope.example.com {
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/paperclipai/netscope.git
-cd netscope
+git clone https://github.com/dzpan/netscope-clean.git
+cd netscope-clean
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install .
@@ -245,6 +245,66 @@ docker compose up -d
 - If network devices are on the local LAN, you may need `host.docker.internal` routing or `network_mode: host` (limited on macOS)
 
 ### Windows
-- Docker Desktop with WSL2 backend recommended
-- Use named volumes (not bind mounts) for best performance
-- Windows Defender may slow builds — add a Docker exclusion
+
+#### Docker (recommended)
+
+1. Install [Docker Desktop](https://docs.docker.com/desktop/install/windows/) with the WSL2 backend enabled
+2. Open PowerShell and run:
+
+```powershell
+git clone https://github.com/dzpan/netscope-clean.git
+cd netscope-clean
+docker compose up -d
+# Open http://localhost:8000
+```
+
+**Tips:**
+- Use named volumes (not bind mounts) for best I/O performance
+- Windows Defender may slow image builds — add the Docker data directory (`%PROGRAMDATA%\DockerDesktop`) to Defender exclusions
+- If port 8000 is in use, edit `docker-compose.yml` and change `"8000:8000"` to e.g. `"8080:8000"`
+
+#### Bare Metal (Windows, no Docker)
+
+**Prerequisites:**
+- [Python 3.11+](https://python.org/downloads/) — check "Add Python to PATH" during install
+- [Node.js 20+](https://nodejs.org/)
+- [Git for Windows](https://git-scm.com/download/win)
+
+```powershell
+# 1. Clone and install
+git clone https://github.com/dzpan/netscope-clean.git
+cd netscope-clean
+python -m venv .venv
+.venv\Scripts\activate
+pip install .
+
+# 2. Build frontend
+cd frontend
+npm ci
+npm run build
+cd ..
+
+# 3. Run
+uvicorn backend.main:app --host 0.0.0.0 --port 8000
+```
+
+Open `http://localhost:8000` in your browser.
+
+**Running as a Windows Service (optional):**
+
+Use [NSSM](https://nssm.cc/) to run NetScope as a background Windows Service:
+
+```powershell
+# Download nssm.exe, then:
+nssm install NetScope "C:\path\to\netscope-clean\.venv\Scripts\uvicorn.exe"
+nssm set NetScope AppParameters "backend.main:app --host 0.0.0.0 --port 8000"
+nssm set NetScope AppDirectory "C:\path\to\netscope-clean"
+nssm set NetScope AppEnvironmentExtra "NETSCOPE_DB_PATH=C:\path\to\netscope-clean\data\netscope.db"
+nssm start NetScope
+```
+
+**Firewall:** Windows Firewall may block port 8000. Allow it with:
+
+```powershell
+netsh advfirewall firewall add rule name="NetScope" dir=in action=allow protocol=TCP localport=8000
+```
